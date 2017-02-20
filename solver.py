@@ -1,10 +1,16 @@
 import math
 
+#===== Utility Functions =====#
 def dist(l1,l2):
     return math.sqrt( (l1[0]-l2[0])**2 + (l1[1]-l2[1])**2 )
 
 def add(l,m):
     return (l[0]+m[0],l[1]+m[1])
+
+def evaluate(node,target):
+    return(node.dist + dist(node.location,target))
+
+#===== Classes =====#
 class Node:
     neighbors = ( (1,0),(0,1),(-1,0),(0,-1) )
     def __init__(self,*args):
@@ -26,9 +32,6 @@ class Node:
     def __repr__(self):
         return('Node({})'.format(self.location))
     
-
-def evaluate(node,target):
-    return(node.dist + dist(node.location,target))
     
 class NodeContainer:
     def __init__(self,nodeLst):
@@ -76,7 +79,8 @@ class NodeContainer:
             if(self.at(test) is not None):
                 final.append(self.at(test).location)
         return(final)
-    
+
+#===== Conversion =====#    
 def nodes(maze): #True = open, false = closed
     final = []
     for y,row in enumerate(maze):
@@ -94,22 +98,7 @@ def maze(nodes):
             final[y].append(int(bool(nodes.at(x,y))))
     return(final)
 
-def text(maze):
-    final = []
-    for row in maze:
-        final.append([' ' if tile else 'X' for tile in row])
-    return(final)
-
-def printMaze(textMaze):
-    decor = 'O' + '-' * (len(textMaze[0]) * 2 - 1) + 'O'
-    print(decor)
-    for row in textMaze:
-        print('|'+' '.join(row)+'|')
-    print(decor)
-
-def overlaySolution(textMaze,solution):
-    for point in solution:
-        textMaze[
+#===== Solver ====="
 def solve(start,end,nodes):
     nodes.at(start).dist = 0
     nodes.at(start).state = 1
@@ -140,16 +129,7 @@ def solve(start,end,nodes):
 
             nodes.at(neighbor).parent = current
             
-if(__name__ == '__main__'):
-    testMaze = [
-    [1,1,1,1,1],
-    [1,0,0,0,1],
-    [1,0,0,0,1],
-    [1,0,0,0,1],
-    [1,1,0,1,1]]
-    start = (0,0)
-    end = (3,4)
-    solution = solve(start,end,nodes(testMaze))
+    
 
 
         
