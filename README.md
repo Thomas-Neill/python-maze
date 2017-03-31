@@ -1,4 +1,4 @@
-#python-maze
+# python-maze
 
 This is a small repository with maze generators and solvers.
 
