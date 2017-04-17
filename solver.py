@@ -12,6 +12,7 @@ def evaluate(node,target):
 
 #===== Classes =====#
 class Node:
+    NEITHER,OPEN,CLOSED = range(3)
     neighbors = ( (1,0),(0,1),(-1,0),(0,-1) )
     def __init__(self,*args):
         if(len(args) == 1): #tuple init
@@ -21,7 +22,7 @@ class Node:
             self.location = args
             self.x,self.y = args
         self.dist = math.inf
-        self.state = 0 #0: Not in open set or closed set 1: in open set 2:in closed set
+        self.state = NEITHER
         
     def distanceTo(self,node):
         return(dist(self.location,node.location))
@@ -59,7 +60,7 @@ class NodeContainer:
     def allOpen(self):
         final = []
         for node in self._nodes:
-            if(node.state == 1):
+            if(node.state == OPEN):
                 final.append(node)
         return(final)
 
@@ -101,7 +102,7 @@ def maze(nodes):
 #===== Solver ====="
 def solve(start,end,nodes):
     nodes.at(start).dist = 0
-    nodes.at(start).state = 1
+    nodes.at(start).state = OPEN
     nodes.at(start).parent = None
     while(nodes.allOpen() != []):
         current = nodes.best(end)
@@ -113,14 +114,14 @@ def solve(start,end,nodes):
                     return(list(reversed(final)))
                 current = nodes.at(current).parent
 
-        nodes.at(current).state = 2 #closes current node
+        nodes.at(current).state = CLOSED #closes current node
 
         for neighbor in nodes.neighbors(current):
-            if(nodes.at(neighbor).state == 2):
+            if(nodes.at(neighbor).state == CLOSED):
                 continue
 
-            if(nodes.at(neighbor).state == 0):
-                nodes.at(neighbor).state = 1
+            if(nodes.at(neighbor).state == NEITHER):
+                nodes.at(neighbor).state = OPEN
                 
             if(nodes.at(current).dist + 1 < nodes.at(neighbor).dist):
                 nodes.at(neighbor).dist = nodes.at(current).dist + 1
@@ -128,8 +129,3 @@ def solve(start,end,nodes):
                 continue
 
             nodes.at(neighbor).parent = current
-            
-    
-
-
-        
